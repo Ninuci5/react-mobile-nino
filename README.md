@@ -29,6 +29,8 @@ You can start developing by editing the files inside the **src/app** directory. 
 
 The login form uses [Fake Store API](https://fakestoreapi.com/docs), a prototype service. Use only its test accounts, never real passwords. The returned token is stored with Expo SecureStore on Android and iOS, and in browser local storage on web. Log out from the home header to remove the saved token. Web local storage is accessible to scripts on the same origin and is not suitable for production authentication.
 
+Remember me retains its setting across restarts. After a successful login, it saves the username and password in Expo SecureStore on Android and iOS; on web, it saves only the username and relies on the browser's password manager for the password. Unchecking it removes the app's saved login details. Logging out does not remove them.
+
 Registration posts fictional details to Fake Store's demo `/users` endpoint. It does not persist accounts or create credentials for login.
 
 ## Get a fresh project

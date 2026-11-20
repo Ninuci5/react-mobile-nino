@@ -1,9 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Redirect, router } from "expo-router";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import * as yup from "yup";
 import { formStyles as styles } from "../auth/formStyles";
+import { clearRememberedLogin, readRememberedLogin, saveRememberedLogin } from "../auth/rememberedLogin";
 import { useSession } from "../auth/session";
 
 const schema = yup.object({
@@ -15,15 +17,60 @@ type LoginValues = yup.InferType<typeof schema>;
 
 export default function Login() {
   const { session, isLoading, saveSession } = useSession();
+  const [remember, setRemember] = useState(false);
+  const [rememberLoading, setRememberLoading] = useState(true);
+  const [rememberUpdating, setRememberUpdating] = useState(false);
+  const [rememberError, setRememberError] = useState<string | null>(null);
+  const [rememberUnavailable, setRememberUnavailable] = useState(false);
   const {
     control,
     handleSubmit,
     setError,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<LoginValues>({
     resolver: yupResolver(schema),
     defaultValues: { username: "", password: "" },
   });
+
+  useEffect(() => {
+    let active = true;
+    readRememberedLogin()
+      .then((saved) => {
+        if (active && saved) {
+          setRemember(true);
+          setValue("username", saved.username);
+          if (saved.password !== undefined) setValue("password", saved.password);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setRememberUnavailable(true);
+          setRememberError("Unable to load saved login details. Restart the app to try again.");
+        }
+      })
+      .finally(() => {
+        if (active) setRememberLoading(false);
+      });
+    return () => { active = false; };
+  }, [setValue]);
+
+  async function toggleRemember() {
+    setRememberUpdating(true);
+    try {
+      if (remember) {
+        await clearRememberedLogin();
+      } else {
+        await saveRememberedLogin();
+      }
+      setRemember(!remember);
+      setRememberError(null);
+    } catch {
+      setRememberError("Unable to update Remember me. Please try again.");
+    } finally {
+      setRememberUpdating(false);
+    }
+  }
 
   async function onSubmit(values: LoginValues) {
     let response: Response;
@@ -62,6 +109,15 @@ export default function Login() {
       return;
     }
 
+    if (remember) {
+      try {
+        await saveRememberedLogin(values);
+      } catch {
+        setError("root", { message: "Unable to save your login details. Please try again." });
+        return;
+      }
+    }
+
     try {
       await saveSession(data.token);
     } catch {
@@ -71,7 +127,7 @@ export default function Login() {
     router.dismissTo("/");
   }
 
-  if (isLoading) return <Text style={styles.loading}>Loading session...</Text>;
+  if (isLoading || rememberLoading) return <Text style={styles.loading}>Loading session...</Text>;
   if (session) return <Redirect href="/" />;
 
   return (
@@ -119,11 +175,27 @@ export default function Login() {
         />
         {errors.password && <Text style={styles.error} accessibilityRole="alert">{errors.password.message}</Text>}
       </View>
+      <Pressable
+        accessibilityRole="checkbox"
+        accessibilityLabel="Remember me"
+        accessibilityState={{ checked: remember, disabled: rememberUnavailable || rememberUpdating || isSubmitting }}
+        aria-checked={remember}
+        disabled={rememberUnavailable || rememberUpdating || isSubmitting}
+        onPress={() => { void toggleRemember(); }}
+        style={checkboxStyles.row}
+      >
+        <View style={checkboxStyles.box}>
+          {remember && <View style={checkboxStyles.checked} />}
+        </View>
+        <Text>Remember me</Text>
+      </Pressable>
+      {Platform.OS === "web" && <Text style={styles.description}>Use your browser&apos;s password manager to save your password.</Text>}
+      {rememberError && <Text style={styles.error} accessibilityRole="alert">{rememberError}</Text>}
       {errors.root && <Text style={styles.error} accessibilityRole="alert">{errors.root.message}</Text>}
       <Pressable
         accessibilityRole="button"
-        accessibilityState={{ disabled: isSubmitting }}
-        disabled={isSubmitting}
+        accessibilityState={{ disabled: isSubmitting || rememberUpdating }}
+        disabled={isSubmitting || rememberUpdating}
         onPress={() => { void handleSubmit(onSubmit)(); }}
         style={[styles.button, isSubmitting && styles.buttonDisabled]}
       >
@@ -132,4 +204,10 @@ export default function Login() {
     </ScrollView>
   );
 }
+
+const checkboxStyles = StyleSheet.create({
+  row: { flexDirection: "row", alignItems: "center", minHeight: 44, marginBottom: 8 },
+  box: { width: 22, height: 22, borderWidth: 1, borderColor: "#666", borderRadius: 4, padding: 3, marginRight: 10 },
+  checked: { flex: 1, backgroundColor: "#1565c0", borderRadius: 1 },
+});
 
