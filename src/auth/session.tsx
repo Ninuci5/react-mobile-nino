@@ -9,6 +9,7 @@ type SessionContextValue = {
   isLoading: boolean;
   storageError: string | null;
   saveSession: (token: string) => Promise<void>;
+  signOut: () => Promise<void>;
 };
 
 const SessionContext = createContext<SessionContextValue | null>(null);
@@ -56,8 +57,22 @@ export function SessionProvider({ children }: PropsWithChildren) {
     setStorageError(null);
   }
 
+  async function signOut() {
+    try {
+      if (Platform.OS === "web") {
+        localStorage.removeItem(SESSION_KEY);
+      } else {
+        await SecureStore.deleteItemAsync(SESSION_KEY);
+      }
+      setSession(null);
+      setStorageError(null);
+    } catch {
+      setStorageError("Unable to log out. Please try again.");
+    }
+  }
+
   return (
-    <SessionContext.Provider value={{ session, isLoading, storageError, saveSession }}>
+    <SessionContext.Provider value={{ session, isLoading, storageError, saveSession, signOut }}>
       {children}
     </SessionContext.Provider>
   );

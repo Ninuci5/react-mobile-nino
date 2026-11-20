@@ -1,9 +1,20 @@
 import { Link } from "expo-router";
+import { useState } from "react";
 import { Pressable, ScrollView, Text, StyleSheet, View } from "react-native";
 import { useSession } from "../auth/session";
 
 export default function Index() {
-  const { session, isLoading, storageError } = useSession();
+  const { session, isLoading, storageError, signOut } = useSession();
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  async function handleSignOut() {
+    setIsSigningOut(true);
+    try {
+      await signOut();
+    } finally {
+      setIsSigningOut(false);
+    }
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -12,7 +23,17 @@ export default function Index() {
           Home
         </Text>
         {!isLoading && (session ? (
-          <Text>Signed in</Text>
+          <View style={styles.account}>
+            <Text>Signed in</Text>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityState={{ disabled: isSigningOut }}
+              disabled={isSigningOut}
+              onPress={() => { void handleSignOut(); }}
+            >
+              <Text style={styles.loginLink}>{isSigningOut ? "Logging out..." : "Log out"}</Text>
+            </Pressable>
+          </View>
         ) : (
           <Link href="/login" asChild>
             <Pressable accessibilityRole="button">
@@ -46,6 +67,10 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: "600",
+  },
+  account: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   loginLink: {
     color: "#1565c0",
