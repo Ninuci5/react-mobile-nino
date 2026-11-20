@@ -1,14 +1,29 @@
-import { ScrollView, Text, StyleSheet, View } from "react-native";
+import { Link } from "expo-router";
+import { Pressable, ScrollView, Text, StyleSheet, View } from "react-native";
+import { useSession } from "../auth/session";
 
 export default function Index() {
+  const { session, isLoading, storageError } = useSession();
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle} accessibilityRole="header">
           Home
         </Text>
+        {!isLoading && (session ? (
+          <Text>Signed in</Text>
+        ) : (
+          <Link href="/login" asChild>
+            <Pressable accessibilityRole="button">
+              <Text style={styles.loginLink}>Log in</Text>
+            </Pressable>
+          </Link>
+        ))}
       </View>
       <View style={styles.content}>
+        {isLoading && <Text>Loading session...</Text>}
+        {storageError && <Text accessibilityRole="alert">{storageError}</Text>}
         <Text>Edit src/app/index.tsx to edit this screen.</Text>
       </View>
     </ScrollView>
@@ -31,6 +46,11 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: "600",
+  },
+  loginLink: {
+    color: "#1565c0",
+    fontSize: 16,
+    padding: 8,
   },
   content: {
     flex: 1,

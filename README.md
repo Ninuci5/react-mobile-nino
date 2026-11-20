@@ -25,6 +25,10 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+## Login
+
+The login form uses [Fake Store API](https://fakestoreapi.com/docs), a prototype service. Use only its test accounts, never real passwords. The returned token is stored with Expo SecureStore on Android and iOS, and in browser local storage on web. Web local storage is accessible to scripts on the same origin and is not suitable for production authentication.
+
 ## Get a fresh project
 
 When you're ready, run:
