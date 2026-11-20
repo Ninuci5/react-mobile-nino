@@ -35,11 +35,18 @@ export default function Index() {
             </Pressable>
           </View>
         ) : (
-          <Link href="/login" asChild>
-            <Pressable accessibilityRole="button">
-              <Text style={styles.loginLink}>Log in</Text>
-            </Pressable>
-          </Link>
+          <View style={styles.account}>
+            <Link href="/login" asChild>
+              <Pressable accessibilityRole="button">
+                <Text style={styles.loginLink}>Log in</Text>
+              </Pressable>
+            </Link>
+            <Link href="/register" asChild>
+              <Pressable accessibilityRole="button">
+                <Text style={styles.loginLink}>Register</Text>
+              </Pressable>
+            </Link>
+          </View>
         ))}
       </View>
       <View style={styles.content}>
