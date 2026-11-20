@@ -1,98 +1,129 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image } from "expo-image";
+import {
+  Button,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableHighlight,
+  TouchableOpacity,
+} from "react-native";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+export default function Index() {
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      keyboardDismissMode="on-drag"
+    >
+      <Text>Welcome to React Native!</Text>
+      <Button title="ყიდვა" />
+      <Text>Welcome to React Native!</Text>
+      <Button title="ყიდვა" />
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+      <Text>Welcome to React Native!</Text>
+      <Button title="ყიდვა" />
+      <Text>Welcome to React Native!</Text>
+      <Button title="ყიდვა" />
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+      <Text>Welcome to React Native!</Text>
+      <Button title="ყიდვა" />
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+      <Text>Welcome to React Native!</Text>
+      <Button title="ყიდვა" />
+      <Text>Welcome to React Native!</Text>
+      <Button title="ყიდვა" />
+      <Text>Welcome to React Native!</Text>
+      <Button title="ყიდვა" />
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      <Text>Welcome to React Native!</Text>
+      <Button title="ყიდვა" />
+      <Text>Welcome to React Native!</Text>
+      <Button title="ყიდვა" />
+
+      <Pressable
+        onPress={() => console.log("Pressed!")}
+        style={styles.pressable}
+      >
+        <Text style={styles.listItem}>Press Me</Text>
+      </Pressable>
+
+      <TouchableOpacity
+        onPress={() => console.log("TouchableOpacity Pressed!")}
+        activeOpacity={0.5}
+        style={styles.pressable}
+      >
+        <Text style={styles.listItem}>Touchable Press Me</Text>
+      </TouchableOpacity>
+
+      <TouchableHighlight
+        onPress={() => console.log("TouchableHighlight Pressed!")}
+        underlayColor="lightgray"
+        style={styles.pressable}
+        activeOpacity={0.2}
+      >
+        <Text style={styles.listItem}>Touchable Highlight Press Me</Text>
+      </TouchableHighlight>
+
+      <TextInput
+        placeholder="Enter text"
+        style={styles.input}
+        keyboardType="numeric"
+        keyboardAppearance="dark"
+        secureTextEntry={true}
+      />
+
+      <Image
+        source={require("../../assets/images/icon.png")}
+        style={styles.image}
+        contentFit="contain"
+      />
+      <Text
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    height: "200%",
+    borderWidth: 10,
+    borderColor: "black",
+    paddingBottom: 200,
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+  contentContainer: {
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 16,
   },
   title: {
-    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: "bold",
   },
-  code: {
-    textTransform: 'uppercase',
+  listItem: {
+    fontSize: 18,
+    paddingVertical: 10,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  pressable: {
+    backgroundColor: "lightblue",
+    borderRadius: 4,
+    marginTop: 16,
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 8,
+    padding: 8,
+    marginTop: 16,
+    width: "80%",
+  },
+  image: {
+    width: 100,
+    height: 100,
+    marginTop: 16,
   },
 });
