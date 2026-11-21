@@ -1,5 +1,5 @@
-import { Link } from "expo-router";
 import { Image } from "expo-image";
+import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSession } from "../auth/session";
@@ -23,13 +23,17 @@ export default function Index() {
       setProductsLoading(true);
       setProductsError(null);
       try {
-        const response = await fetch("https://fakestoreapi.com/products", { signal: controller.signal });
+        const response = await fetch("https://fakestoreapi.com/products", {
+          signal: controller.signal,
+        });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data: unknown = await response.json();
-        if (!Array.isArray(data) || !data.every(isProduct)) throw new Error("Invalid product response");
+        if (!Array.isArray(data) || !data.every(isProduct))
+          throw new Error("Invalid product response");
         if (active) setProducts(data);
       } catch {
-        if (active) setProductsError("Unable to load products. Please try again.");
+        if (active)
+          setProductsError("Unable to load products. Please try again.");
       } finally {
         if (active) setProductsLoading(false);
       }
@@ -54,9 +58,6 @@ export default function Index() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle} accessibilityRole="header">
-          Home
-        </Text>
         <CartLink />
         {!isLoading &&
           (session ? (
@@ -93,13 +94,18 @@ export default function Index() {
       <View style={styles.content}>
         {isLoading && <Text>Loading session...</Text>}
         {storageError && <Text accessibilityRole="alert">{storageError}</Text>}
-        <Text style={styles.sectionTitle} accessibilityRole="header">Products</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">
+          Products
+        </Text>
         {productsLoading ? (
           <Text>Loading products...</Text>
         ) : productsError ? (
           <View>
             <Text accessibilityRole="alert">{productsError}</Text>
-            <Pressable accessibilityRole="button" onPress={() => setProductsAttempt((attempt) => attempt + 1)}>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => setProductsAttempt((attempt) => attempt + 1)}
+            >
               <Text style={styles.retry}>Try again</Text>
             </Pressable>
           </View>
@@ -109,12 +115,28 @@ export default function Index() {
           <View style={styles.products}>
             {products.map((product) => (
               <View key={product.id} style={styles.product}>
-                <Link href={{ pathname: "/products/[id]", params: { id: String(product.id) } }} asChild>
-                  <Pressable style={styles.productLink} accessibilityLabel={`View ${product.title}`}>
-                    <Image source={{ uri: product.image }} style={styles.productImage} contentFit="contain" accessibilityLabel={product.title} />
+                <Link
+                  href={{
+                    pathname: "/products/[id]",
+                    params: { id: String(product.id) },
+                  }}
+                  asChild
+                >
+                  <Pressable
+                    style={styles.productLink}
+                    accessibilityLabel={`View ${product.title}`}
+                  >
+                    <Image
+                      source={{ uri: product.image }}
+                      style={styles.productImage}
+                      contentFit="contain"
+                      accessibilityLabel={product.title}
+                    />
                     <View style={styles.productDetails}>
                       <Text style={styles.productTitle}>{product.title}</Text>
-                      <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+                      <Text style={styles.price}>
+                        ${product.price.toFixed(2)}
+                      </Text>
                     </View>
                   </Pressable>
                 </Link>
@@ -135,7 +157,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     flexWrap: "wrap",
     paddingHorizontal: 16,
     paddingVertical: 12,
