@@ -58,6 +58,11 @@ export default function Index() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
+        <Link href="/scanner" asChild>
+          <Pressable accessibilityRole="button">
+            <Text style={styles.loginLink}>Scan</Text>
+          </Pressable>
+        </Link>
         <CartLink />
         {!isLoading &&
           (session ? (

@@ -29,6 +29,8 @@ The home screen loads products from the public Fake Store API. Select a product 
 
 The cart is available without signing in and is stored locally across app restarts. Add products from the home or detail screen, then use the cart to change quantities or remove items. This demo does not submit orders or sync carts between devices.
 
+Use **Scan** on the home screen to scan a barcode or QR code. The app asks for camera permission and displays the scanned value; it does not automatically look up products or open links. Test on a physical Android or iOS device with Expo Go or a development build. Web camera access requires a secure context such as HTTPS or localhost and browser permission.
+
 ## Login
 
 The login form uses [Fake Store API](https://fakestoreapi.com/docs), a prototype service. Use only its test accounts, never real passwords. The returned token is stored with Expo SecureStore on Android and iOS, and in browser local storage on web. Log out from the home header to remove the saved token. Web local storage is accessible to scripts on the same origin and is not suitable for production authentication.
