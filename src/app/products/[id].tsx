@@ -3,6 +3,8 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { isProductDetail, type ProductDetail } from "../../products/product";
+import { AddToCartButton } from "../../cart/AddToCartButton";
+import { CartLink } from "../../cart/CartLink";
 
 type DetailState =
   | { status: "loading" }
@@ -78,6 +80,10 @@ export default function ProductPage() {
           <Text style={styles.category}>{state.product.category}</Text>
           <Text style={styles.rating}>Rating: {state.product.rating.rate} / 5 ({state.product.rating.count} reviews)</Text>
           <Text style={styles.description}>{state.product.description}</Text>
+          <View style={styles.addButton}>
+            <AddToCartButton product={state.product} />
+            <CartLink />
+          </View>
         </>
       )}
     </ScrollView>
@@ -92,5 +98,6 @@ const styles = StyleSheet.create({
   category: { fontSize: 16, marginBottom: 8 },
   rating: { fontSize: 16, marginBottom: 16 },
   description: { fontSize: 16, lineHeight: 24 },
+  addButton: { marginTop: 20, flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 12 },
   retry: { color: "#1565c0", fontSize: 16, paddingVertical: 12 },
 });

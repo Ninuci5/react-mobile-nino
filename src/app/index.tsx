@@ -3,6 +3,8 @@ import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSession } from "../auth/session";
+import { AddToCartButton } from "../cart/AddToCartButton";
+import { CartLink } from "../cart/CartLink";
 import { isProduct, type Product } from "../products/product";
 
 export default function Index() {
@@ -55,6 +57,7 @@ export default function Index() {
         <Text style={styles.headerTitle} accessibilityRole="header">
           Home
         </Text>
+        <CartLink />
         {!isLoading &&
           (session ? (
             <View style={styles.account}>
@@ -105,15 +108,18 @@ export default function Index() {
         ) : (
           <View style={styles.products}>
             {products.map((product) => (
-              <Link key={product.id} href={{ pathname: "/products/[id]", params: { id: String(product.id) } }} asChild>
-                <Pressable style={styles.product} accessibilityLabel={`View ${product.title}`}>
-                  <Image source={{ uri: product.image }} style={styles.productImage} contentFit="contain" accessibilityLabel={product.title} />
-                  <View style={styles.productDetails}>
-                    <Text style={styles.productTitle}>{product.title}</Text>
-                    <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-                  </View>
-                </Pressable>
-              </Link>
+              <View key={product.id} style={styles.product}>
+                <Link href={{ pathname: "/products/[id]", params: { id: String(product.id) } }} asChild>
+                  <Pressable style={styles.productLink} accessibilityLabel={`View ${product.title}`}>
+                    <Image source={{ uri: product.image }} style={styles.productImage} contentFit="contain" accessibilityLabel={product.title} />
+                    <View style={styles.productDetails}>
+                      <Text style={styles.productTitle}>{product.title}</Text>
+                      <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+                    </View>
+                  </Pressable>
+                </Link>
+                <AddToCartButton product={product} />
+              </View>
             ))}
           </View>
         )}
@@ -130,6 +136,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    flexWrap: "wrap",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -160,12 +167,15 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   product: {
-    flexDirection: "row",
-    alignItems: "center",
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "#aaa",
     borderRadius: 8,
     padding: 12,
+  },
+  productLink: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
   },
   productImage: {
     width: 90,

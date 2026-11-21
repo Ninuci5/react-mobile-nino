@@ -27,6 +27,8 @@ You can start developing by editing the files inside the **src/app** directory. 
 
 The home screen loads products from the public Fake Store API. Select a product to see its details. An internet connection is required.
 
+The cart is available without signing in and is stored locally across app restarts. Add products from the home or detail screen, then use the cart to change quantities or remove items. This demo does not submit orders or sync carts between devices.
+
 ## Login
 
 The login form uses [Fake Store API](https://fakestoreapi.com/docs), a prototype service. Use only its test accounts, never real passwords. The returned token is stored with Expo SecureStore on Android and iOS, and in browser local storage on web. Log out from the home header to remove the saved token. Web local storage is accessible to scripts on the same origin and is not suitable for production authentication.
