@@ -1,6 +1,6 @@
 import { Link } from "expo-router";
 import { useState } from "react";
-import { Pressable, ScrollView, Text, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSession } from "../auth/session";
 
 export default function Index() {
@@ -22,32 +22,37 @@ export default function Index() {
         <Text style={styles.headerTitle} accessibilityRole="header">
           Home
         </Text>
-        {!isLoading && (session ? (
-          <View style={styles.account}>
-            <Text>Signed in</Text>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityState={{ disabled: isSigningOut }}
-              disabled={isSigningOut}
-              onPress={() => { void handleSignOut(); }}
-            >
-              <Text style={styles.loginLink}>{isSigningOut ? "Logging out..." : "Log out"}</Text>
-            </Pressable>
-          </View>
-        ) : (
-          <View style={styles.account}>
-            <Link href="/login" asChild>
-              <Pressable accessibilityRole="button">
-                <Text style={styles.loginLink}>Log in</Text>
+        {!isLoading &&
+          (session ? (
+            <View style={styles.account}>
+              <Text>Signed in</Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityState={{ disabled: isSigningOut }}
+                disabled={isSigningOut}
+                onPress={() => {
+                  void handleSignOut();
+                }}
+              >
+                <Text style={styles.loginLink}>
+                  {isSigningOut ? "Logging out..." : "Log out"}
+                </Text>
               </Pressable>
-            </Link>
-            <Link href="/register" asChild>
-              <Pressable accessibilityRole="button">
-                <Text style={styles.loginLink}>Register</Text>
-              </Pressable>
-            </Link>
-          </View>
-        ))}
+            </View>
+          ) : (
+            <View style={styles.account}>
+              <Link href="/login" asChild>
+                <Pressable accessibilityRole="button">
+                  <Text style={styles.loginLink}>Log in</Text>
+                </Pressable>
+              </Link>
+              <Link href="/register" asChild>
+                <Pressable accessibilityRole="button">
+                  <Text style={styles.loginLink}>Register</Text>
+                </Pressable>
+              </Link>
+            </View>
+          ))}
       </View>
       <View style={styles.content}>
         {isLoading && <Text>Loading session...</Text>}
