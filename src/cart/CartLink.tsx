@@ -1,5 +1,6 @@
 import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
+import { ActionLabel } from "../components/ActionLabel";
 import { useAppSelector } from "./hooks";
 
 export function CartLink() {
@@ -11,13 +12,12 @@ export function CartLink() {
   return (
     <Link href="/cart" asChild>
       <Pressable accessibilityRole="button" accessibilityLabel={label} style={styles.link}>
-        <Text style={styles.text}>{ready ? `Cart (${count})` : "Cart"}</Text>
+        <ActionLabel label={ready ? `Cart (${count})` : "Cart"} icon={{ ios: "cart", android: "shopping_cart", web: "shopping_cart" }} />
       </Pressable>
     </Link>
   );
 }
 
 const styles = StyleSheet.create({
-  link: { padding: 8, minHeight: 44, justifyContent: "center" },
-  text: { color: "#1565c0", fontSize: 16 },
+  link: { paddingHorizontal: 5, paddingVertical: 8, minHeight: 44, justifyContent: "center" },
 });

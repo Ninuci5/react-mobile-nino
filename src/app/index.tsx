@@ -5,6 +5,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSession } from "../auth/session";
 import { AddToCartButton } from "../cart/AddToCartButton";
 import { CartLink } from "../cart/CartLink";
+import { ActionLabel } from "../components/ActionLabel";
 import { isProduct, type Product } from "../products/product";
 
 export default function Index() {
@@ -59,8 +60,8 @@ export default function Index() {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <Link href="/scanner" asChild>
-          <Pressable accessibilityRole="button">
-            <Text style={styles.loginLink}>Scan</Text>
+          <Pressable accessibilityRole="button" accessibilityLabel="Scan" style={styles.headerAction}>
+            <ActionLabel label="Scan" icon={{ ios: "qrcode.viewfinder", android: "qr_code_scanner", web: "qr_code_scanner" }} />
           </Pressable>
         </Link>
         <CartLink />
@@ -70,27 +71,30 @@ export default function Index() {
               <Text>Signed in</Text>
               <Pressable
                 accessibilityRole="button"
+                accessibilityLabel={isSigningOut ? "Logging out" : "Log out"}
                 accessibilityState={{ disabled: isSigningOut }}
                 disabled={isSigningOut}
+                style={styles.headerAction}
                 onPress={() => {
                   void handleSignOut();
                 }}
               >
-                <Text style={styles.loginLink}>
-                  {isSigningOut ? "Logging out..." : "Log out"}
-                </Text>
+                <ActionLabel
+                  label={isSigningOut ? "Logging out..." : "Log out"}
+                  icon={{ ios: "rectangle.portrait.and.arrow.right", android: "logout", web: "logout" }}
+                />
               </Pressable>
             </View>
           ) : (
             <View style={styles.account}>
               <Link href="/login" asChild>
-                <Pressable accessibilityRole="button">
-                  <Text style={styles.loginLink}>Log in</Text>
+                <Pressable accessibilityRole="button" accessibilityLabel="Log in" style={styles.headerAction}>
+                  <ActionLabel label="Log in" icon={{ ios: "rectangle.portrait.and.arrow.forward", android: "login", web: "login" }} />
                 </Pressable>
               </Link>
               <Link href="/register" asChild>
-                <Pressable accessibilityRole="button">
-                  <Text style={styles.loginLink}>Register</Text>
+                <Pressable accessibilityRole="button" accessibilityLabel="Register" style={styles.headerAction}>
+                  <ActionLabel label="Register" icon={{ ios: "person.badge.plus", android: "person_add", web: "person_add" }} />
                 </Pressable>
               </Link>
             </View>
@@ -177,10 +181,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  loginLink: {
-    color: "#1565c0",
-    fontSize: 16,
-    padding: 8,
+  headerAction: {
+    paddingHorizontal: 5,
+    paddingVertical: 8,
+    minHeight: 44,
+    justifyContent: "center",
   },
   content: {
     padding: 16,
