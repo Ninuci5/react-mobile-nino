@@ -25,7 +25,7 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-The home screen loads products from the public Fake Store API. An internet connection is required.
+The home screen loads products from the public Fake Store API. Select a product to see its details. An internet connection is required.
 
 ## Login
 

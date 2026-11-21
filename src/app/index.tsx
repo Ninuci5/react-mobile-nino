@@ -3,22 +3,7 @@ import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSession } from "../auth/session";
-
-type Product = {
-  id: number;
-  title: string;
-  price: number;
-  image: string;
-};
-
-function isProduct(value: unknown): value is Product {
-  if (typeof value !== "object" || value === null) return false;
-  const product = value as Record<string, unknown>;
-  return typeof product.id === "number" && Number.isFinite(product.id)
-    && typeof product.title === "string" && product.title.trim().length > 0
-    && typeof product.price === "number" && Number.isFinite(product.price) && product.price >= 0
-    && typeof product.image === "string" && product.image.startsWith("https://");
-}
+import { isProduct, type Product } from "../products/product";
 
 export default function Index() {
   const { session, isLoading, storageError, signOut } = useSession();
@@ -120,13 +105,15 @@ export default function Index() {
         ) : (
           <View style={styles.products}>
             {products.map((product) => (
-              <View key={product.id} style={styles.product}>
-                <Image source={{ uri: product.image }} style={styles.productImage} contentFit="contain" accessibilityLabel={product.title} />
-                <View style={styles.productDetails}>
-                  <Text style={styles.productTitle}>{product.title}</Text>
-                  <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-                </View>
-              </View>
+              <Link key={product.id} href={{ pathname: "/products/[id]", params: { id: String(product.id) } }} asChild>
+                <Pressable style={styles.product} accessibilityLabel={`View ${product.title}`}>
+                  <Image source={{ uri: product.image }} style={styles.productImage} contentFit="contain" accessibilityLabel={product.title} />
+                  <View style={styles.productDetails}>
+                    <Text style={styles.productTitle}>{product.title}</Text>
+                    <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+                  </View>
+                </Pressable>
+              </Link>
             ))}
           </View>
         )}
